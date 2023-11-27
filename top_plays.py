@@ -1,10 +1,16 @@
 import json
 import os
 import pathlib
+from typing import NamedTuple
 from typing import Sequence
 
 import pytube
 import requests
+
+
+class Playlist(NamedTuple):
+    url: str
+    tag: str
 
 
 class History:
@@ -34,33 +40,43 @@ class History:
         return videos
 
 
-def _make_message(url: str) -> str:
-    return f'{url}\n\n#NBA'
+playlist = Playlist(
+        url='https://www.youtube.com/playlist?list=PLlVlyGVtvuVnHgxDVDxbRuObq6XSKiCxZ',  # noqa: E501
+        tag='#NBA',
+    )
 
 
-def _notify(url: str) -> None:
+def _make_message(url: str, tag: str) -> str:
+    return f'{url}\n\n{tag}'
+
+
+def _notify(url: str, tag: str) -> None:
     token = os.environ['NBA_TOKEN']
     chat_id = os.environ['NBA_CHAT_ID']
-    text = _make_message(url=url)
+    text = _make_message(url=url, tag=tag)
     params = {
             'chat_id': chat_id,
             'text': text,
             'disable_web_page_preview': 'False',
         }
     url = f'https://api.telegram.org/bot{token}/sendMessage'
-    requests.get(url=url, params=params)
+    response = requests.get(url=url, params=params)
+    response.raise_for_status()
 
 
-def notify(urls: set[str]) -> None:
-    for url in urls:
-        _notify(url)
+def notify(urls: set[tuple[str, str]]) -> None:
+    for url, tag in urls:
+        _notify(url, tag)
 
 
 def main() -> int:
     history = History()
-    watch_url = 'https://www.youtube.com/playlist?list=PLlVlyGVtvuVnHgxDVDxbRuObq6XSKiCxZ'  # noqa: E501
-    p = pytube.Playlist(watch_url)
-    new_videos = set(p) - set(history.old_videos)
+    p = pytube.Playlist(playlist.url)
+    new_videos = {
+            (url, playlist.tag) for
+            url in
+            set(p) - set(history.old_videos)
+        }
     notify(new_videos)
     history.update_history(videos=p)
     return 0
