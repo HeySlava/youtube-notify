@@ -34,12 +34,17 @@ class History:
         return videos
 
 
+def _make_message(url: str) -> str:
+    return f'{url}\n\n#NBA'
+
+
 def _notify(url: str) -> None:
     token = os.environ['NBA_TOKEN']
     chat_id = os.environ['NBA_CHAT_ID']
+    text = _make_message(url=url)
     params = {
             'chat_id': chat_id,
-            'text': url,
+            'text': text,
             'disable_web_page_preview': 'False',
         }
     url = f'https://api.telegram.org/bot{token}/sendMessage'
