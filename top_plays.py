@@ -42,12 +42,12 @@ class History:
 
 playlist = Playlist(
         url='https://www.youtube.com/playlist?list=PLlVlyGVtvuVnHgxDVDxbRuObq6XSKiCxZ',  # noqa: E501
-        tag='#NBA',
+        tag='NBA',
     )
 
 
 def _make_message(url: str, tag: str) -> str:
-    return f'{url}\n\n{tag}'
+    return f'{url}\n\n#{tag}'
 
 
 def _notify(url: str, tag: str) -> None:
