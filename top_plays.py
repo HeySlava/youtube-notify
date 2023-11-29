@@ -17,7 +17,7 @@ class History:
 
     def __init__(
             self,
-            history: pathlib.Path = pathlib.Path('storage') / 'history.json',
+            history: pathlib.Path,
     ) -> None:
         self.history = history
         self._init()
@@ -70,8 +70,10 @@ def notify(urls: set[tuple[str, str]]) -> None:
 
 
 def main() -> int:
-    history = History()
     p = pytube.Playlist(playlist.url)
+    history = History(
+            pathlib.Path(f'./storage/{playlist.tag}') / 'history.json'
+        )
     new_videos = {
             (url, playlist.tag) for
             url in
