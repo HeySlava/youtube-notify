@@ -11,6 +11,8 @@ RUN :\
     && pip install --no-cache-dir pip -U wheel setuptools /app/ \
     && :
 
-COPY top_plays.py .
+COPY top_plays.py start.py rollback.py .
+
+RUN ./start.py
 
 CMD ["python",  "top_plays.py"]
