@@ -54,11 +54,13 @@ class History:
         return videos
 
 
-playlist = Playlist(
-        url='https://www.youtube.com/@NBA/videos',
-        tag='NBA',
-        pattern=re.compile(r"NBA's Top \d+ Plays Of The Night"),
-    )
+playlists = [
+        Playlist(
+            url='https://www.youtube.com/@NBA/videos',
+            tag='NBA',
+            pattern=re.compile(r"NBA's Top \d+ Plays Of The Night"),
+        ),
+    ]
 
 
 def _make_message(url: str, tag: str) -> str:
@@ -116,18 +118,20 @@ def _get_new_videos(playlist: Playlist) -> Set[Video]:
 
 
 def main() -> int:
-    history = History(
-            pathlib.Path(f'./storage/{playlist.tag}') / 'history.json'
-        )
-    last_videos = _get_new_videos(playlist)
-    new_video_tags = {
-            (url, playlist.tag) for
-            url in
-            {v.url for v in last_videos} - set(history.old_videos)
-        }
-    notify(new_video_tags)
-    all_videos = set(history.old_videos).union({v.url for v in last_videos})
-    history.update_history(videos=list(all_videos))
+    for p in playlists:
+        history = History(
+                pathlib.Path(f'./storage/{p.tag}') / 'history.json'
+            )
+        last_videos = _get_new_videos(p)
+        new_video_tags = {
+                (url, p.tag) for
+                url in
+                {v.url for v in last_videos} - set(history.old_videos)
+            }
+        notify(new_video_tags)
+        new_url = {v.url for v in last_videos}
+        all_videos = set(history.old_videos).union(new_url)
+        history.update_history(videos=list(all_videos))
     return 0
 
 
