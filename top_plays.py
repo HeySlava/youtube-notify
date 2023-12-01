@@ -63,7 +63,10 @@ playlists = [
         Playlist(
             url='https://www.youtube.com/@FIBA3x3/videos',
             tag='FIBA3x3',
-            pattern=re.compile(r'top\s+\d+\s+plays', flags=re.IGNORECASE),
+            pattern=re.compile(
+                r'top\s+\d+\s+plays|Dunk\s+Contest\s+Highlight',
+                flags=re.IGNORECASE,
+            ),
         ),
     ]
 
