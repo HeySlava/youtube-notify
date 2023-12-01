@@ -97,6 +97,7 @@ def _parse_output(
             title, _, rest = line.strip('"').partition(SEP)
             _, _, video_id = rest.rpartition('=')
             url = base_url.format(video_id=video_id)
+            title = title.strip()
             result.add(Video(title=title, url=url))
     return result
 
