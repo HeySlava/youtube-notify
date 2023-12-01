@@ -58,12 +58,25 @@ playlists = [
         Playlist(
             url='https://www.youtube.com/@NBA/videos',
             tag='NBA',
-            pattern=re.compile(r"NBA's Top \d+ Plays Of The Night"),
+            pattern=re.compile(
+                r"NBA's\s+Top\s+\d+\s+Plays\s+Of\s+The\s+Night",
+                flags=re.IGNORECASE,
+            ),
         ),
         Playlist(
             url='https://www.youtube.com/@FIBA3x3/videos',
             tag='FIBA3x3',
             pattern=re.compile(r'top\s+\d+\s+plays', flags=re.IGNORECASE),
+        ),
+        Playlist(
+            url='https://www.youtube.com/@FIBA3x3/videos',
+            tag='euroleague',
+            pattern=re.compile(r'Top\s+\d+\s+Plays', flags=re.IGNORECASE),
+        ),
+        Playlist(
+            url='https://www.youtube.com/@vtbleague',
+            tag='vtbleague',
+            pattern=re.compile(r'Top\s+\d+\s+Plays', flags=re.IGNORECASE),
         ),
     ]
 
