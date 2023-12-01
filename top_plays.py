@@ -72,7 +72,7 @@ playlists = [
             ),
         ),
         Playlist(
-            url='https://www.youtube.com/@FIBA3x3/videos',
+            url='https://www.youtube.com/@euroleague/videos',
             tag='euroleague',
             pattern=re.compile(r'Top\s+\d+\s+Plays', flags=re.IGNORECASE),
         ),
