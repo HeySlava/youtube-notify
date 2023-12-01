@@ -8,7 +8,7 @@ COPY setup.cfg setup.py .
 
 RUN :\
     && python -m venv /venv \
-    && pip install --no-cache-dir pip -U wheel setuptools /app/ \
+    && pip install --no-cache-dir pip -U wheel setuptools /app/ yt-dlp==2023.7.6 \
     && :
 
 COPY top_plays.py .
