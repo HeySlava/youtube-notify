@@ -3,6 +3,7 @@ import os
 import pathlib
 import re
 import subprocess
+from typing import Iterable
 from typing import List
 from typing import NamedTuple
 from typing import Pattern
@@ -23,6 +24,7 @@ class Playlist(NamedTuple):
 class Video(NamedTuple):
     url: str
     title: str
+    tag: str
 
 
 class History:
@@ -84,42 +86,55 @@ playlists = [
     ]
 
 
-def _make_message(url: str, tag: str) -> str:
-    return f'{url}\n\n#{tag}'
+def escape(s: str) -> str:
+    d = {'<': '&lt;', '>': '&gt;', '&': '&amp;'}
+    escaped = ''
+    for char in s:
+        escaped += d.get(char, char)
+    return escaped
 
 
-def _notify(url: str, tag: str) -> None:
+def _make_message(video: Video) -> str:
+    return (
+            f'<a href="{video.url}">{escape(video.title)}</a>'
+            '\n\n'
+            f'#{video.tag}'
+        )
+
+
+def _notify(video: Video) -> None:
     token = os.environ['NBA_TOKEN']
     chat_id = os.environ['NBA_CHAT_ID']
-    text = _make_message(url=url, tag=tag)
+    text = _make_message(video)
     params = {
             'chat_id': chat_id,
             'text': text,
             'disable_web_page_preview': 'False',
+            'parse_mode': 'HTML',
         }
     url = f'https://api.telegram.org/bot{token}/sendMessage'
     response = requests.get(url=url, params=params)
     response.raise_for_status()
 
 
-def notify(urls: set[tuple[str, str]]) -> None:
-    for url, tag in urls:
-        _notify(url, tag)
+def notify(videos: Iterable[Video]) -> None:
+    for v in videos:
+        _notify(v)
 
 
 def _parse_output(
-        pattern: Pattern[str],
+        playlist: Playlist,
         output: str,
 ) -> Set[Video]:
     result = set()
     base_url = 'https://www.youtube.com/watch?v={video_id}'
     for line in output.splitlines():
-        if pattern.search(line):
+        if playlist.pattern.search(line):
             title, _, rest = line.strip('"').partition(SEP)
             _, _, video_id = rest.rpartition('=')
             url = base_url.format(video_id=video_id)
             title = title.strip()
-            result.add(Video(title=title, url=url))
+            result.add(Video(title=title, url=url, tag=playlist.tag))
     return result
 
 
@@ -136,7 +151,7 @@ def _get_new_videos(playlist: Playlist) -> Set[Video]:
             stderr=subprocess.STDOUT,
             text=True,
         )
-    return _parse_output(pattern=playlist.pattern, output=p.stdout)
+    return _parse_output(playlist=playlist, output=p.stdout)
 
 
 def main() -> int:
@@ -145,12 +160,10 @@ def main() -> int:
                 pathlib.Path(f'./storage/{p.tag}') / 'history.json'
             )
         last_videos = _get_new_videos(p)
-        new_video_tags = {
-                (url, p.tag) for
-                url in
-                {v.url for v in last_videos} - set(history.old_videos)
+        new_videos = {
+                v for v in last_videos if v.url not in history.old_videos
             }
-        notify(new_video_tags)
+        notify(new_videos)
         new_url = {v.url for v in last_videos}
         all_videos = set(history.old_videos).union(new_url)
         history.update_history(videos=list(all_videos))
