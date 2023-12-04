@@ -7,7 +7,6 @@ from typing import Iterable
 from typing import List
 from typing import NamedTuple
 from typing import Pattern
-from typing import Set
 
 import requests
 
@@ -122,18 +121,19 @@ def notify(videos: Iterable[Video]) -> None:
 def _parse_output(
         playlist: Playlist,
         output: str,
-) -> Set[Video]:
-    result = set()
+) -> List[Video]:
+    result = []
     output_lines = output.strip().splitlines()
     titles = output_lines[::2]
     urls = output_lines[1::2]
     for title, url in zip(titles, urls):
         if playlist.pattern.search(title):
-            result.add(Video(title=title, url=url, tag=playlist.tag))
+            result.append(Video(title=title, url=url, tag=playlist.tag))
+    result.reverse()
     return result
 
 
-def _get_new_videos(playlist: Playlist) -> Set[Video]:
+def _get_last_videos(playlist: Playlist) -> List[Video]:
     cmd = (
             'yt-dlp', '-I0:30', '-s', '--flat-playlist',
             '--print', '%(title)s', '--print', 'urls',
@@ -154,10 +154,10 @@ def main() -> int:
         history = History(
                 pathlib.Path(f'./storage/{p.tag}') / 'history.json'
             )
-        last_videos = _get_new_videos(p)
-        new_videos = {
+        last_videos = _get_last_videos(p)
+        new_videos = [
                 v for v in last_videos if v.url not in history.old_videos
-            }
+            ]
         notify(new_videos)
         new_url = {v.url for v in last_videos}
         all_videos = set(history.old_videos).union(new_url)
