@@ -12,9 +12,6 @@ from typing import Set
 import requests
 
 
-SEP = '____'
-
-
 class Playlist(NamedTuple):
     url: str
     tag: str
@@ -127,21 +124,19 @@ def _parse_output(
         output: str,
 ) -> Set[Video]:
     result = set()
-    base_url = 'https://www.youtube.com/watch?v={video_id}'
-    for line in output.splitlines():
-        if playlist.pattern.search(line):
-            title, _, rest = line.strip('"').partition(SEP)
-            _, _, video_id = rest.rpartition('=')
-            url = base_url.format(video_id=video_id)
-            title = title.strip()
+    output_lines = output.strip().splitlines()
+    titles = output_lines[::2]
+    urls = output_lines[1::2]
+    for title, url in zip(titles, urls):
+        if playlist.pattern.search(title):
             result.add(Video(title=title, url=url, tag=playlist.tag))
     return result
 
 
 def _get_new_videos(playlist: Playlist) -> Set[Video]:
     cmd = (
-            'yt-dlp', '-I0:30', '-s', '--flat-playlist', '-o',
-            f'"%(title)s {SEP} %(original_url)s"', '--print', 'filename',
+            'yt-dlp', '-I0:30', '-s', '--flat-playlist',
+            '--print', '%(title)s', '--print', 'urls',
             playlist.url,
 
         )

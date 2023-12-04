@@ -1,10 +1,11 @@
 import re
+from unittest import mock
 
 import pytest
 
 from testing import util
+from top_plays import _get_new_videos
 from top_plays import _make_message
-from top_plays import _parse_output
 from top_plays import escape
 from top_plays import Playlist
 from top_plays import Video
@@ -33,29 +34,32 @@ def test_make_message(video, expected):
             (
                 util.path_to_resource('NBA_raw.txt').read_text(),
                 Playlist(
-                    pattern=re.compile(r"NBA's Top \d+ Plays Of The Night"),
+                    pattern=re.compile('match'),
                     url='fake_url',
-                    tag='fiba',
+                    tag='nba',
                 ),
                 set(
                     (
                         Video(
-                            url='https://www.youtube.com/watch?v=Kws_FSbcMbY',
-                            title="NBA's Top 10 Plays Of The Night ｜ November 29, 2023",  # noqa: E501
-                            tag='fiba',
+                            url='https://test2.com',
+                            title='match title2',
+                            tag='nba',
                         ),
                         Video(
-                            url='https://www.youtube.com/watch?v=YjIPRN9sUR8',
-                            title="NBA's Top 10 Plays Of The Night ｜ November 28, 2023",  # noqa: E501
-                            tag='fiba',
+                            url='https://test1.com',
+                            title='match title1',
+                            tag='nba',
                         ),
                     ),
                 ),
             )
         ]
     )
-def test_parse_output(output, playlist, expected):
-    assert sorted(_parse_output(playlist, output)) == sorted(expected)
+def test_get_new_videos(output, playlist, expected):
+    mock_result = mock.MagicMock()
+    with mock.patch('subprocess.run', return_value=mock_result):
+        mock_result.stdout = output
+        assert _get_new_videos(playlist) == expected
 
 
 @pytest.mark.parametrize(
