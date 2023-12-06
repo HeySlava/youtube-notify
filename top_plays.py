@@ -75,9 +75,14 @@ playlists = [
             pattern=re.compile(r'Top\s+\d+\s+Plays', flags=re.IGNORECASE),
         ),
         Playlist(
-            url='https://www.youtube.com/@vtbleague',
+            url='https://www.youtube.com/@vtbleague/videos',
             tag='vtbleague',
             pattern=re.compile(r'Top\s+\d+\s+Plays', flags=re.IGNORECASE),
+        ),
+        Playlist(
+            url='https://www.youtube.com/@acbcom/videos',
+            tag='ACB',
+            pattern=re.compile(r'top\s?\d+', flags=re.IGNORECASE),
         ),
     ]
 
