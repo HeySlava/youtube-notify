@@ -84,6 +84,11 @@ playlists = [
             tag='ACB',
             pattern=re.compile(r'top\s?\d+', flags=re.IGNORECASE),
         ),
+        Playlist(
+            url='https://www.youtube.com/@BasketballCL/videos',
+            tag='BasketballCL',
+            pattern=re.compile(r'top\s?\d+\s?play', flags=re.IGNORECASE),
+        ),
     ]
 
 
