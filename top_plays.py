@@ -94,6 +94,24 @@ playlists = [
             tag='FIBA',
             pattern=re.compile(r'top\s?\d+\s?plays', flags=re.IGNORECASE),
         ),
+        Playlist(
+            url='https://www.youtube.com/@nbagleague/videos',
+            tag='nbagleague',
+            pattern=re.compile(r'top\s?\d+\s?plays', flags=re.IGNORECASE),
+        ),
+        Playlist(
+            url='https://www.youtube.com/@legabasket/videos',
+            tag='legabasket',
+            pattern=re.compile(
+                r'top\s?\d+\s?pokerstarsnews',
+                flags=re.IGNORECASE,
+            ),
+        ),
+        Playlist(
+            url='https://www.youtube.com/@LNBOfficiel/videos',
+            tag='LNBOfficiel',
+            pattern=re.compile(r'elite\s?top\s?\d+\s', flags=re.IGNORECASE),
+        ),
     ]
 
 
