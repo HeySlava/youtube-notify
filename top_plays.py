@@ -72,7 +72,10 @@ playlists = [
         Playlist(
             url='https://www.youtube.com/@euroleague/videos',
             tag='euroleague',
-            pattern=re.compile(r'Top\s+\d+\s+Plays', flags=re.IGNORECASE),
+            pattern=re.compile(
+                r'top\s?\d+\s?(play|assist|block|dunk)?',
+                flags=re.IGNORECASE,
+            ),
         ),
         Playlist(
             url='https://www.youtube.com/@vtbleague/videos',
