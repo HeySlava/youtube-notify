@@ -115,6 +115,11 @@ playlists = [
             tag='LNBOfficiel',
             pattern=re.compile(r'elite\s?top\s?\d+\s', flags=re.IGNORECASE),
         ),
+        Playlist(
+            url='https://www.youtube.com/@WNBA/videos',
+            tag='WNBA',
+            pattern=re.compile(r'best\s?of\s?wnba', flags=re.IGNORECASE),
+        ),
     ]
 
 
