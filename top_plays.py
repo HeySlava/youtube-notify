@@ -57,7 +57,7 @@ playlists = [
             url='https://www.youtube.com/@NBA/videos',
             tag='NBA',
             pattern=re.compile(
-                r"NBA's\s+Top\s+\d+\s+Plays\s+Of\s+The\s+Night",
+                r"NBA's\s*Top\s*\d+\s*Plays\s*Of\s*The\s*Night",
                 flags=re.IGNORECASE,
             ),
         ),
@@ -73,52 +73,52 @@ playlists = [
             url='https://www.youtube.com/@euroleague/videos',
             tag='euroleague',
             pattern=re.compile(
-                r'top\s?\d+\s?(play|assist|block|dunk)?',
+                r'top\s*\d+\s*(play|assist|block|dunk)?',
                 flags=re.IGNORECASE,
             ),
         ),
         Playlist(
             url='https://www.youtube.com/@vtbleague/videos',
             tag='vtbleague',
-            pattern=re.compile(r'Top\s+\d+\s+Plays', flags=re.IGNORECASE),
+            pattern=re.compile(r'Top\s*\d+\s*Plays', flags=re.IGNORECASE),
         ),
         Playlist(
             url='https://www.youtube.com/@acbcom/videos',
             tag='ACB',
-            pattern=re.compile(r'top\s?\d+', flags=re.IGNORECASE),
+            pattern=re.compile(r'top\s*\d+', flags=re.IGNORECASE),
         ),
         Playlist(
             url='https://www.youtube.com/@BasketballCL/videos',
             tag='BasketballCL',
-            pattern=re.compile(r'top\s?\d+\s?play', flags=re.IGNORECASE),
+            pattern=re.compile(r'top\s*\d+\s*play', flags=re.IGNORECASE),
         ),
         Playlist(
             url='https://www.youtube.com/@FIBA/videos',
             tag='FIBA',
-            pattern=re.compile(r'top\s?\d+\s?plays', flags=re.IGNORECASE),
+            pattern=re.compile(r'top\s*\d+\s*plays', flags=re.IGNORECASE),
         ),
         Playlist(
             url='https://www.youtube.com/@nbagleague/videos',
             tag='nbagleague',
-            pattern=re.compile(r'top\s?\d+\s?plays', flags=re.IGNORECASE),
+            pattern=re.compile(r'top\s*\d+\s*plays', flags=re.IGNORECASE),
         ),
         Playlist(
             url='https://www.youtube.com/@legabasket/videos',
             tag='legabasket',
             pattern=re.compile(
-                r'top\s?\d+\s?pokerstarsnews',
+                r'top\s*\d+\s*pokerstarsnews',
                 flags=re.IGNORECASE,
             ),
         ),
         Playlist(
             url='https://www.youtube.com/@LNBOfficiel/videos',
             tag='LNBOfficiel',
-            pattern=re.compile(r'elite\s?top\s?\d+\s', flags=re.IGNORECASE),
+            pattern=re.compile(r'elite\s*top\s*\d+\s', flags=re.IGNORECASE),
         ),
         Playlist(
             url='https://www.youtube.com/@WNBA/videos',
             tag='WNBA',
-            pattern=re.compile(r'best\s?of\s?wnba', flags=re.IGNORECASE),
+            pattern=re.compile(r'best\s*of\s*wnba', flags=re.IGNORECASE),
         ),
     ]
 
