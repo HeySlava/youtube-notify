@@ -34,12 +34,16 @@ def test_make_message(video, expected):
                 """\
 bad title
 https://test.com
+NA
 match title2
 https://test2.com
+NA
 bad2 title
 https://test.com
+NA
 match title1
 https://test1.com
+NA
 """,
                 Playlist(
                     pattern=re.compile('match'),
@@ -62,6 +66,49 @@ https://test1.com
         ]
     )
 def test_get_last_videos(output, playlist, expected):
+    mock_result = mock.MagicMock()
+    with mock.patch('subprocess.run', return_value=mock_result):
+        mock_result.stdout = output
+        result = _get_last_videos(playlist)
+        assert result == expected
+
+
+@pytest.mark.parametrize(
+        'output,playlist,expected',
+        [
+            (
+                """\
+match title2 with NA
+https://test2.com
+NA
+match title1 with NA
+https://test1.com
+NA
+match title without NA
+https://test.com
+is_upcoming
+""",
+                Playlist(
+                    pattern=re.compile('match'),
+                    url='fake_url',
+                    tag='nba',
+                ),
+                [
+                    Video(
+                        url='https://test1.com',
+                        title='match title1 with NA',
+                        tag='nba',
+                    ),
+                    Video(
+                        url='https://test2.com',
+                        title='match title2 with NA',
+                        tag='nba',
+                    ),
+                ],
+            )
+        ]
+    )
+def test_get_last_videos_only_na(output, playlist, expected):
     mock_result = mock.MagicMock()
     with mock.patch('subprocess.run', return_value=mock_result):
         mock_result.stdout = output
