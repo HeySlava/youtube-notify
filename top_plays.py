@@ -159,16 +159,20 @@ def notify(videos: Iterable[Video]) -> None:
         _notify(v)
 
 
+NA = 'NA'
+
+
 def _parse_output(
         playlist: Playlist,
         output: str,
 ) -> List[Video]:
     result = []
     output_lines = output.strip().splitlines()
-    titles = output_lines[::2]
-    urls = output_lines[1::2]
-    for title, url in zip(titles, urls):
-        if playlist.pattern.search(title):
+    titles = output_lines[::3]
+    urls = output_lines[1::3]
+    video_types = output_lines[2::3]
+    for title, url, video_type in zip(titles, urls, video_types):
+        if playlist.pattern.search(title) and video_type == NA:
             result.append(Video(title=title, url=url, tag=playlist.tag))
     result.reverse()
     return result
@@ -177,7 +181,9 @@ def _parse_output(
 def _get_last_videos(playlist: Playlist) -> List[Video]:
     cmd = (
             'yt-dlp', '-I0:30', '-s', '--flat-playlist',
-            '--print', '%(title)s', '--print', 'urls',
+            '--print', '%(title)s',
+            '--print', 'urls',
+            '--print', 'live_status',
             playlist.url,
 
         )
