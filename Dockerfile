@@ -2,7 +2,7 @@ FROM python:3.11-slim-bullseye
 
 WORKDIR /app
 
-ENV YT_DLP_VERSION=2023.7.6
+ENV YT_DLP_VERSION=2023.11.16
 ENV PATH=/venv/bin:$PATH
 
 RUN :\
