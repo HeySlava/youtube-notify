@@ -34,7 +34,7 @@ class History:
 
     def _init(self) -> None:
         if not self.history.parent.exists():
-            self.history.parent.mkdir()
+            self.history.parent.mkdir(parents=True)
 
     def update_history(self, videos: List[str]) -> None:
         with open(self.history, 'w') as f:
