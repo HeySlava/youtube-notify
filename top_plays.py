@@ -38,7 +38,7 @@ class History:
 
     def update_history(self, videos: List[str]) -> None:
         with open(self.history, 'w') as f:
-            json.dump(videos, f)
+            json.dump(videos, f, indent=4, ensure_ascii=False)
 
     @property
     def old_videos(self) -> list[str]:
