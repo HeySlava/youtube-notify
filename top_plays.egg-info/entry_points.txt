@@ -1,2 +1,0 @@
-[console_scripts]
-top-plays = top_plays:main

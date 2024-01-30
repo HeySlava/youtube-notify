@@ -1,2 +1,0 @@
-requests
-yt-dlp==2023.11.16
