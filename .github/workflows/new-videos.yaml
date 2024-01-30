@@ -3,7 +3,11 @@ name: Get new videos
 on:
     workflow_dispatch:
     schedule:
-        - cron: "00 9 * * *"
+        - cron: "00 8 * * *"
+
+env:
+  NBA_CHAT_ID: ${{ secrets.NBA_CHAT_ID }}
+  NBA_TOKEN: ${{ secrets.NBA_TOKEN }}
 
 jobs:
     scheduled:
@@ -17,8 +21,8 @@ jobs:
             - name: Install package
               run: |-
                   pip install . pre-commit
-                  NBA_CHAT_ID=${{secrets.NBA_CHAT_ID}} NBA_TOKEN=${{secrets.NBA_TOKEN}} top-plays
-
+            - name: Run top-plays
+              run: top-plays
             - name: Commit and push if changed
               run: |-
                   pre-commit run check-json --all-files
