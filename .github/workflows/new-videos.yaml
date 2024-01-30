@@ -28,6 +28,11 @@ jobs:
               run: top-plays
             - name: Run pre commit to fix json
               run: pre-commit run check-json --all-files
+            - name: View diff
+              run: git diff
+            - name: View diff files
+              run: git diff --name-only
+
             - name: Commit and push if changed
               run: |-
                   git config user.name "Automated"
