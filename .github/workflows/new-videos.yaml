@@ -27,7 +27,7 @@ jobs:
             - name: Run top-plays
               run: top-plays
             - name: Run pre commit to fix json
-              run: pre-commit run end-of-file-fixer --all-files
+              run: pre-commit run end-of-file-fixer --all-files || exit 0
             - name: Commit and push if changed
               run: |
                   git config user.name "Automated"
