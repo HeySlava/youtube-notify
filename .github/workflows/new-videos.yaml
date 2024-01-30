@@ -5,6 +5,9 @@ on:
     schedule:
         - cron: "00 8 * * *"
 
+permissions:
+  contents: write
+
 env:
   NBA_CHAT_ID: ${{ secrets.NBA_CHAT_ID }}
   NBA_TOKEN: ${{ secrets.NBA_TOKEN }}
