@@ -33,6 +33,6 @@ jobs:
                   git config user.name "Automated"
                   git config user.email "actions@users.noreply.github.com"
                   timestamp=$(date --rfc-3339=seconds --utc)
-                  git add -A
-                  git commit -m "Latest data: ${timestamp}"
+                  git add -u
+                  git commit -m "top-plays run: ${timestamp}"
                   git push
