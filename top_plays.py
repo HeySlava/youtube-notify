@@ -1,4 +1,3 @@
-import json
 import os
 import pathlib
 import re
@@ -31,25 +30,17 @@ class History:
     ) -> None:
         self.history = history
         self._init()
+        self.videos = self.history.read_text().strip().splitlines()
 
     def _init(self) -> None:
         if not self.history.parent.exists():
             self.history.parent.mkdir(parents=True)
+            self.history.touch()
 
-    def update_history(self, videos: List[str]) -> None:
-        with open(self.history, 'w') as f:
-            json.dump(videos, f, indent=4, ensure_ascii=False)
-
-    @property
-    def old_videos(self) -> list[str]:
-        if (
-                not self.history.exists() or
-                not self.history.read_text()
-        ):
-            return []
-        with open(self.history) as f:
-            videos = json.load(f)
-        return videos
+    def update_history(self, videos: List[Video]) -> None:
+        with open(self.history, 'a') as f:
+            for v in videos:
+                f.write(f'{v.url}\n')
 
 
 playlists = [
@@ -203,12 +194,10 @@ def main() -> int:
             )
         last_videos = _get_last_videos(p)
         new_videos = [
-                v for v in last_videos if v.url not in history.old_videos
+                v for v in last_videos if v.url not in history.videos
             ]
         notify(new_videos)
-        new_url = {v.url for v in last_videos}
-        all_videos = set(history.old_videos).union(new_url)
-        history.update_history(videos=list(all_videos))
+        history.update_history(videos=new_videos)
     return 0
 
 
