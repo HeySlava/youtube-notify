@@ -11,6 +11,7 @@ permissions:
 env:
   NBA_CHAT_ID: ${{ secrets.NBA_CHAT_ID }}
   NBA_TOKEN: ${{ secrets.NBA_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
     scheduled:
@@ -37,7 +38,7 @@ jobs:
               run: |-
                   git config user.name "Automated"
                   git config user.email "actions@users.noreply.github.com"
-                  git add -A
                   timestamp=$(date --rfc-3339=seconds --utc)
+                  git add -u
                   git commit -m "Latest data: ${timestamp}"
                   git remote set-url --push origin https://HeySlava:$GITHUB_TOKEN@github.com/top_plays
