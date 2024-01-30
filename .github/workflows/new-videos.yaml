@@ -34,4 +34,4 @@ jobs:
                   git add -A
                   timestamp=$(date --rfc-3339=seconds --utc)
                   git commit -m "Latest data: ${timestamp}" || exit 0
-                  git push
+                  git remote set-url --push origin https://HeySlava:$GITHUB_TOKEN@github.com/top_plays
