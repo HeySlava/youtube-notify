@@ -1,0 +1,9 @@
+setup.cfg
+setup.py
+top_plays.py
+top_plays.egg-info/PKG-INFO
+top_plays.egg-info/SOURCES.txt
+top_plays.egg-info/dependency_links.txt
+top_plays.egg-info/entry_points.txt
+top_plays.egg-info/requires.txt
+top_plays.egg-info/top_level.txt

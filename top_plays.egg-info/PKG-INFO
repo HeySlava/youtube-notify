@@ -1,0 +1,9 @@
+Metadata-Version: 2.1
+Name: top_plays
+Version: 0.2.3
+Summary: Top plays of the day in NBA
+Author: Vyacheslav Kapitonov
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Requires-Dist: requests
+Requires-Dist: yt-dlp==2023.11.16
