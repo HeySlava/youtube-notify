@@ -17,7 +17,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Check out this repo
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
             - uses: actions/setup-python@v5
               with:
                 python-version: '3.11'
@@ -26,9 +26,10 @@ jobs:
                   pip install . pre-commit
             - name: Run top-plays
               run: top-plays
+            - name: Run pre commit to fix json
+              run: pre-commit run check-json --all-files
             - name: Commit and push if changed
               run: |-
-                  pre-commit run check-json --all-files
                   git config user.name "Automated"
                   git config user.email "actions@users.noreply.github.com"
                   git add -A
