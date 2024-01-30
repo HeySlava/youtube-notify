@@ -190,7 +190,7 @@ def _get_last_videos(playlist: Playlist) -> List[Video]:
 def main() -> int:
     for p in playlists:
         history = History(
-                pathlib.Path(f'./storage/{p.tag}') / 'history.json'
+                pathlib.Path(f'./storage/{p.tag}') / 'history.txt'
             )
         last_videos = _get_last_videos(p)
         new_videos = [
