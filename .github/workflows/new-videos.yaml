@@ -3,7 +3,7 @@ name: Get new videos
 on:
     workflow_dispatch:
     schedule:
-        - cron: "00 8 * * *"
+        - cron: "00 9 * * *"
 
 permissions:
   contents: write
