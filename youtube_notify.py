@@ -114,8 +114,8 @@ def _make_message(video: Video) -> str:
 
 
 def _notify(video: Video) -> None:
-    token = os.environ['NBA_TOKEN']
-    chat_id = os.environ['NBA_CHAT_ID']
+    token = os.environ['NOTIFY_TOKEN']
+    chat_id = os.environ['NOTIFY_CHAT_ID']
     text = _make_message(video)
     params = {
             'chat_id': chat_id,
