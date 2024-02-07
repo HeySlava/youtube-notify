@@ -3,11 +3,11 @@ from unittest import mock
 
 import pytest
 
-from top_plays import _get_last_videos
-from top_plays import _make_message
-from top_plays import escape
-from top_plays import Playlist
-from top_plays import Video
+from youtube_notify import _get_last_videos
+from youtube_notify import _make_message
+from youtube_notify import escape
+from youtube_notify import Playlist
+from youtube_notify import Video
 
 
 @pytest.mark.parametrize(
