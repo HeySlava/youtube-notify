@@ -1,3 +1,4 @@
+import argparse
 import os
 import pathlib
 import re
@@ -6,6 +7,7 @@ from typing import Iterable
 from typing import List
 from typing import NamedTuple
 from typing import Pattern
+from typing import Sequence
 
 import requests
 import yaml
@@ -168,8 +170,16 @@ def _get_last_videos(playlist: Playlist) -> List[Video]:
     return _parse_output(playlist=playlist, output=p.stdout)
 
 
-def main() -> int:
-    playlists = read_config('./config.yaml')
+def main(argv: Sequence[str] | None = None) -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+            '-C', '--config',
+            default='config.yaml',
+            help='Path to the configuration file. Default %(default)s',
+        )
+    args = parser.parse_args(argv)
+
+    playlists = read_config(args.config)
     for p in playlists:
         history = History(
                 pathlib.Path(f'./storage/{p.tag}') / 'history.txt'
