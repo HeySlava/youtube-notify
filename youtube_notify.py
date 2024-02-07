@@ -1,3 +1,4 @@
+import argparse
 import os
 import pathlib
 import re
@@ -6,8 +7,10 @@ from typing import Iterable
 from typing import List
 from typing import NamedTuple
 from typing import Pattern
+from typing import Sequence
 
 import requests
+import yaml
 
 
 class Playlist(NamedTuple):
@@ -43,75 +46,55 @@ class History:
                 f.write(f'{v.url}\n')
 
 
-playlists = [
-        Playlist(
-            url='https://www.youtube.com/@NBA/videos',
-            tag='NBA',
-            pattern=re.compile(
-                r"NBA's\s*Top\s*\d+\s*Plays\s*Of\s*The\s*Night",
-                flags=re.IGNORECASE,
-            ),
-        ),
-        Playlist(
-            url='https://www.youtube.com/@FIBA3x3/videos',
-            tag='FIBA3x3',
-            pattern=re.compile(
-                r'top\s*\d+|highlights',
-                flags=re.IGNORECASE,
-            ),
-        ),
-        Playlist(
-            url='https://www.youtube.com/@euroleague/videos',
-            tag='euroleague',
-            pattern=re.compile(
-                r'top\s*\d+\s*(play|assist|block|dunk)?',
-                flags=re.IGNORECASE,
-            ),
-        ),
-        Playlist(
-            url='https://www.youtube.com/@vtbleague/videos',
-            tag='vtbleague',
-            pattern=re.compile(r'Top\s*\d+\s*Plays', flags=re.IGNORECASE),
-        ),
-        Playlist(
-            url='https://www.youtube.com/@acbcom/videos',
-            tag='ACB',
-            pattern=re.compile(r'top\s*\d+', flags=re.IGNORECASE),
-        ),
-        Playlist(
-            url='https://www.youtube.com/@BasketballCL/videos',
-            tag='BasketballCL',
-            pattern=re.compile(r'top\s*\d+\s*play', flags=re.IGNORECASE),
-        ),
-        Playlist(
-            url='https://www.youtube.com/@FIBA/videos',
-            tag='FIBA',
-            pattern=re.compile(r'top\s*\d+\s*plays', flags=re.IGNORECASE),
-        ),
-        Playlist(
-            url='https://www.youtube.com/@nbagleague/videos',
-            tag='nbagleague',
-            pattern=re.compile(r'top\s*\d+\s*plays', flags=re.IGNORECASE),
-        ),
-        Playlist(
-            url='https://www.youtube.com/@legabasket/videos',
-            tag='legabasket',
-            pattern=re.compile(
-                r'top\s*\d+\s*pokerstarsnews',
-                flags=re.IGNORECASE,
-            ),
-        ),
-        Playlist(
-            url='https://www.youtube.com/@LNBOfficiel/videos',
-            tag='LNBOfficiel',
-            pattern=re.compile(r'elite\s*top\s*\d+\s', flags=re.IGNORECASE),
-        ),
-        Playlist(
-            url='https://www.youtube.com/@WNBA/videos',
-            tag='WNBA',
-            pattern=re.compile(r'best\s*of\s*wnba', flags=re.IGNORECASE),
-        ),
-    ]
+flag_mapping = {
+    'ASCII': re.ASCII,
+    'IGNORECASE': re.IGNORECASE,
+    'LOCALE': re.LOCALE,
+    'UNICODE': re.UNICODE,
+    'MULTILINE': re.MULTILINE,
+    'DOTALL': re.DOTALL,
+    'VERBOSE': re.VERBOSE,
+    'TEMPLATE': re.TEMPLATE,
+    'DEBUG': re.DEBUG,
+    'A': re.A,
+    'S': re.S,
+    'X': re.X,
+    'I': re.I,
+    'L': re.L,
+    'M': re.M,
+    'U': re.U,
+}
+
+
+def _parse_re_flags(flags: str) -> int:
+    flag_values = [
+            flag_mapping[flag.strip()] for flag in flags.split('|')
+        ]
+    compiled_flags = 0
+    for flag_value in flag_values:
+        compiled_flags |= flag_value
+    return compiled_flags
+
+
+def read_config(config_path: str) -> list[Playlist]:
+    with open(config_path) as f:
+        config = yaml.safe_load(f)
+
+    playlists = []
+    for p in config['playlists']:
+        url = p['url'].strip()
+        tag = p['tag'].strip()
+        regex = p['pattern']['regex'].strip()
+        flags_s = p['pattern']['flags'].strip()
+
+        pattern = re.compile(regex, flags=_parse_re_flags(flags_s))
+        playlist = Playlist(
+                url=url,
+                tag=tag,
+                pattern=pattern,
+            )
+        playlists.append(playlist)
+    return playlists
 
 
 def escape(s: str) -> str:
@@ -187,7 +170,16 @@ def _get_last_videos(playlist: Playlist) -> List[Video]:
     return _parse_output(playlist=playlist, output=p.stdout)
 
 
-def main() -> int:
+def main(argv: Sequence[str] | None = None) -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+            '-C', '--config',
+            default='config.yaml',
+            help='Path to the configuration file. Default %(default)s',
+        )
+    args = parser.parse_args(argv)
+
+    playlists = read_config(args.config)
     for p in playlists:
         history = History(
                 pathlib.Path(f'./storage/{p.tag}') / 'history.txt'
