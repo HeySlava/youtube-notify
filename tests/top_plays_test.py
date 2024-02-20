@@ -3,9 +3,9 @@ from unittest import mock
 
 import pytest
 
-from youtube_notify import _get_last_videos
 from youtube_notify import _make_message
 from youtube_notify import escape
+from youtube_notify import get_last_videos_from_playlist
 from youtube_notify import Playlist
 from youtube_notify import Video
 
@@ -69,7 +69,7 @@ def test_get_last_videos(output, playlist, expected):
     mock_result = mock.MagicMock()
     with mock.patch('subprocess.run', return_value=mock_result):
         mock_result.stdout = output
-        result = _get_last_videos(playlist)
+        result = get_last_videos_from_playlist(playlist)
         assert result == expected
 
 
@@ -112,7 +112,7 @@ def test_get_last_videos_only_na(output, playlist, expected):
     mock_result = mock.MagicMock()
     with mock.patch('subprocess.run', return_value=mock_result):
         mock_result.stdout = output
-        result = _get_last_videos(playlist)
+        result = get_last_videos_from_playlist(playlist)
         assert result == expected
 
 

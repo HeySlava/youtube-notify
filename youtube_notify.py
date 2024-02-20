@@ -152,14 +152,18 @@ def _parse_output(
     return result
 
 
-def _get_last_videos(playlist: Playlist) -> List[Video]:
+def get_last_videos_from_playlist(playlist: Playlist) -> List[Video]:
+    output = _get_raw_output(playlist.url)
+    return _parse_output(playlist=playlist, output=output)
+
+
+def _get_raw_output(playlist_url: str, n_videos: int = 30) -> str:
     cmd = (
-            'yt-dlp', '-I0:30', '-s', '--flat-playlist',
+            'yt-dlp', f'-I0:{n_videos}', '-s', '--flat-playlist',
             '--print', '%(title)s',
             '--print', 'urls',
             '--print', 'live_status',
-            playlist.url,
-
+            playlist_url,
         )
     p = subprocess.run(
             cmd,
@@ -167,7 +171,7 @@ def _get_last_videos(playlist: Playlist) -> List[Video]:
             stderr=subprocess.STDOUT,
             text=True,
         )
-    return _parse_output(playlist=playlist, output=p.stdout)
+    return p.stdout
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -184,7 +188,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         history = History(
                 pathlib.Path(f'./storage/{p.tag}') / 'history.txt'
             )
-        last_videos = _get_last_videos(p)
+        last_videos = get_last_videos_from_playlist(p)
         new_videos = [
                 v for v in last_videos if v.url not in history.videos
             ]
