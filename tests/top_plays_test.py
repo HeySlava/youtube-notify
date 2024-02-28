@@ -4,6 +4,7 @@ from unittest import mock
 import pytest
 
 from youtube_notify import _make_message
+from youtube_notify import DEFAULT_N_VIDEOS
 from youtube_notify import escape
 from youtube_notify import get_last_videos_from_playlist
 from youtube_notify import Playlist
@@ -49,6 +50,7 @@ NA
                     pattern=re.compile('match'),
                     url='fake_url',
                     tag='nba',
+                    n_videos=DEFAULT_N_VIDEOS,
                 ),
                 [
                     Video(
@@ -92,6 +94,7 @@ is_upcoming
                     pattern=re.compile('match'),
                     url='fake_url',
                     tag='nba',
+                    n_videos=DEFAULT_N_VIDEOS,
                 ),
                 [
                     Video(

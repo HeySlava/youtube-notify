@@ -13,10 +13,14 @@ import requests
 import yaml
 
 
+DEFAULT_N_VIDEOS = 30
+
+
 class Playlist(NamedTuple):
     url: str
     tag: str
     pattern: Pattern[str]
+    n_videos: int
 
 
 class Video(NamedTuple):
@@ -86,12 +90,14 @@ def read_config(config_path: str) -> list[Playlist]:
         tag = p['tag'].strip()
         regex = p['pattern']['regex'].strip()
         flags_s = p['pattern']['flags'].strip()
+        n_videos = p.get('n_videos', DEFAULT_N_VIDEOS)
 
         pattern = re.compile(regex, flags=_parse_re_flags(flags_s))
         playlist = Playlist(
                 url=url,
                 tag=tag,
                 pattern=pattern,
+                n_videos=n_videos,
             )
         playlists.append(playlist)
     return playlists
@@ -153,7 +159,7 @@ def _parse_output(
 
 
 def get_last_videos_from_playlist(playlist: Playlist) -> List[Video]:
-    output = _get_raw_output(playlist.url)
+    output = _get_raw_output(playlist.url, n_videos=playlist.n_videos)
     return _parse_output(playlist=playlist, output=output)
 
 
