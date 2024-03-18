@@ -30,18 +30,20 @@ class Video(NamedTuple):
 
 
 class Storage:
-
-    def __init__(
-            self,
-            storage_path: pathlib.Path,
-    ) -> None:
+    def __init__(self, storage_path: pathlib.Path) -> None:
         self.storage_path = storage_path
-        self.videos = self.storage_path.read_text().strip().splitlines()
+
+    @property
+    def videos(self) -> List[str]:
+        return self._load_videos()
 
     def add_to_end(self, new_videos: List[Video]) -> None:
         with open(self.storage_path, 'a') as f:
             for v in new_videos:
                 f.write(f'{v.url}\n')
+
+    def _load_videos(self) -> List[str]:
+        return self.storage_path.read_text().strip().splitlines()
 
 
 flag_mapping = {
