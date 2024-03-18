@@ -29,25 +29,21 @@ class Video(NamedTuple):
     tag: str
 
 
-class History:
+class Storage:
+    def __init__(self, storage_path: pathlib.Path) -> None:
+        self.storage_path = storage_path
 
-    def __init__(
-            self,
-            history: pathlib.Path,
-    ) -> None:
-        self.history = history
-        self._init()
-        self.videos = self.history.read_text().strip().splitlines()
+    @property
+    def videos(self) -> List[str]:
+        return self._load_videos()
 
-    def _init(self) -> None:
-        if not self.history.parent.exists():
-            self.history.parent.mkdir(parents=True)
-            self.history.touch()
-
-    def update_history(self, videos: List[Video]) -> None:
-        with open(self.history, 'a') as f:
-            for v in videos:
+    def add_to_end(self, new_videos: List[Video]) -> None:
+        with open(self.storage_path, 'a') as f:
+            for v in new_videos:
                 f.write(f'{v.url}\n')
+
+    def _load_videos(self) -> List[str]:
+        return self.storage_path.read_text().strip().splitlines()
 
 
 flag_mapping = {
@@ -191,15 +187,15 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     playlists = read_config(args.config)
     for p in playlists:
-        history = History(
-                pathlib.Path(f'./storage/{p.tag}') / 'history.txt'
-            )
+        storage_folder = pathlib.Path(f'./storage/{p.tag}')
+        storage_folder.mkdir(exist_ok=True, parents=True)
+        history = Storage(storage_folder / 'history.txt')
         last_videos = get_last_videos_from_playlist(p)
         new_videos = [
                 v for v in last_videos if v.url not in history.videos
             ]
         notify(new_videos)
-        history.update_history(videos=new_videos)
+        history.add_to_end(new_videos=new_videos)
     return 0
 
 
