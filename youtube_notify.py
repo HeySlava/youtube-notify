@@ -29,23 +29,17 @@ class Video(NamedTuple):
     tag: str
 
 
-class History:
+class Storage:
 
     def __init__(
             self,
-            history: pathlib.Path,
+            storage_path: pathlib.Path,
     ) -> None:
-        self.history = history
-        self._init()
-        self.videos = self.history.read_text().strip().splitlines()
-
-    def _init(self) -> None:
-        if not self.history.parent.exists():
-            self.history.parent.mkdir(parents=True)
-            self.history.touch()
+        self.storage_path = storage_path
+        self.videos = self.storage_path.read_text().strip().splitlines()
 
     def update_history(self, videos: List[Video]) -> None:
-        with open(self.history, 'a') as f:
+        with open(self.storage_path, 'a') as f:
             for v in videos:
                 f.write(f'{v.url}\n')
 
@@ -191,9 +185,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     playlists = read_config(args.config)
     for p in playlists:
-        history = History(
-                pathlib.Path(f'./storage/{p.tag}') / 'history.txt'
-            )
+        storage_folder = pathlib.Path(f'./storage/{p.tag}')
+        storage_folder.mkdir(exist_ok=True, parents=True)
+        history = Storage(storage_folder / 'history.txt')
         last_videos = get_last_videos_from_playlist(p)
         new_videos = [
                 v for v in last_videos if v.url not in history.videos
