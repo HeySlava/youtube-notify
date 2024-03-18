@@ -38,9 +38,9 @@ class Storage:
         self.storage_path = storage_path
         self.videos = self.storage_path.read_text().strip().splitlines()
 
-    def update_history(self, videos: List[Video]) -> None:
+    def add_to_end(self, new_videos: List[Video]) -> None:
         with open(self.storage_path, 'a') as f:
-            for v in videos:
+            for v in new_videos:
                 f.write(f'{v.url}\n')
 
 
@@ -193,7 +193,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 v for v in last_videos if v.url not in history.videos
             ]
         notify(new_videos)
-        history.update_history(videos=new_videos)
+        history.add_to_end(new_videos=new_videos)
     return 0
 
 
