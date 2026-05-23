@@ -54,7 +54,6 @@ flag_mapping = {
     'MULTILINE': re.MULTILINE,
     'DOTALL': re.DOTALL,
     'VERBOSE': re.VERBOSE,
-    'TEMPLATE': re.TEMPLATE,
     'DEBUG': re.DEBUG,
     'A': re.A,
     'S': re.S,
